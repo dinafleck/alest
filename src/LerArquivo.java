@@ -4,7 +4,7 @@ import java.io.IOException;
 
 public class LerArquivo {
     public String[] ler() {
-        String arquivoCSV = "Casos de teste\\consumos_100.csv";
+        String arquivoCSV = "Casos de teste\\consumos_20.csv";
         String linha;
         int tamanho = 0;
 

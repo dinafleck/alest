@@ -34,93 +34,16 @@ public class Main {
         resultado.write("O total geral de consumo foi:\n" + String.format(consumoTotal.calcularConsumoTotal(consumos) + "\n"));
         resultado.write("\n");
 
+        //lista de consumo por mês
+        ConsumosDoMes consumosMes = new ConsumosDoMes();
+        int[] consumosDoMes = consumosMes.calcularConsumosPorMes(consumos);
 
         String[] meses = {"Janeiro", "Fevereiro", "Marco", "Abril", "Maio", "Junho", "Julho", "Agosto", "Setembro", "Outubro", "Novembro", "Dezembro"};
-        int[] consumosDoMes = new int[12];
-        for (Consumo consumo : consumos){
-            for (int i = 0; i < meses.length; i++){
-                if (consumo.getMes().equals(meses[i])){
-                    consumosDoMes[i] += consumo.getConsumo();
-                }
-            }
-        }
-
 
         //matriz de consumos
         String[] subestacoes = {"Planalto", "Litoral", "Progresso", "Aurora", "Horizonte"};
-        int[][] consumosubmes = new int[5][12];
-
-        for (Consumo consumo : consumos){
-            for (int i = 0; i < consumosubmes.length; i++){
-                for (int j = 0; j < consumosubmes[i].length; j++){
-                    if (consumo.getMes().equals(meses[j]) && consumo.getSubestacao().equals(subestacoes[i])){
-                        consumosubmes[i][j] += consumo.getConsumo();
-                    }
-                }
-            }
-        }
-
-        //media por subestacao
-        double[] media = new double[5];
-        for(int i = 0; i < consumosubmes.length; i++){
-            double soma = 0;
-            for(int j = 0; j < consumosubmes[i].length; j++){
-                soma += consumosubmes[i][j];
-            }
-            media[i] = soma / 12;
-        }
-
-        //subestacao com maior consumo mensal
-        int maior_mes = 0;
-        int maior_subestacao = 0;
-        int menor_mes = 0;
-        int menor_subestacao = 0;
-        int aux_consumo = 0;
-
-        for (int i = 0; i < consumosubmes.length; i++) {
-            for (int j = 0; j < consumosubmes[i].length; j++) {
-                if (consumosubmes[i][j] > aux_consumo){
-                    aux_consumo = consumosubmes[i][j];
-                    maior_mes = i;
-                    maior_subestacao = j;
-                }
-            }
-        }
-
-        //subestacao com menor consumo mensal
-        for (int i = 0; i < consumosubmes.length; i++) {
-            for (int j = 0; j < consumosubmes[i].length; j++) {
-                if (consumosubmes[i][j] < aux_consumo && consumosubmes[i][j] > 0){
-                    aux_consumo = consumosubmes[i][j];
-                    menor_mes = i;
-                    menor_subestacao = j;
-                }
-            }
-        }
-
-        //lista do consumo mensal ordenada
-        int aux;
-        String[] mesesOrdenados = meses.clone();
-        String aux_meses;
-        for (int i = 0; i < consumosDoMes.length; i++) {
-            for (int j = 0; j < consumosDoMes.length-i-1; j++) {
-                if (consumosDoMes[j] < consumosDoMes[j+1]){
-                    aux = consumosDoMes[j];
-                    consumosDoMes[j] = consumosDoMes[j+1];
-                    consumosDoMes[j+1] = aux;
-                    aux_meses = mesesOrdenados[j];
-                    mesesOrdenados[j] = mesesOrdenados[j+1];
-                    mesesOrdenados[j+1] = aux_meses;
-                }
-            }
-        }
-
-
-
-        //Impressão dos resultados no arquivo
-
-
-        //Total geral de consumo
+        MatrizDeConsumos matrizDeConsumos = new MatrizDeConsumos();
+        int[][] consumoSubMes = matrizDeConsumos.criarMatriz(consumos);
 
         resultado.write("Matriz de consumo das subestacoes \n");
         resultado.write(String.format("%-10s", "Mês"));
@@ -130,13 +53,17 @@ public class Main {
         }
 
         resultado.write("\n");
-        for (int i = 0; i < consumosubmes.length; i++) {
+        for (int i = 0; i < consumoSubMes.length; i++) {
             resultado.write(String.format("%-10s", subestacoes[i]));
-            for (int j = 0; j < consumosubmes[i].length; j++) {
-                resultado.write(String.format("%-10s", consumosubmes[i][j]));
+            for (int j = 0; j < consumoSubMes[i].length; j++) {
+                resultado.write(String.format("%-10s", consumoSubMes[i][j]));
             }
             resultado.write("\n");
         }
+
+        //media por subestacao
+        Media mediaSubestacao = new Media();
+        double[] media = mediaSubestacao.calcularMedia(matrizDeConsumos, consumos);
 
         DecimalFormat df = new DecimalFormat("0.00");
         resultado.write("\n");
@@ -145,18 +72,33 @@ public class Main {
             resultado.write(subestacoes[i] + " " + df.format(media[i]) + "\n");
         }
 
-        resultado.write("\n");
-        resultado.write("Subestação com maior consumo mensal \n");
-        resultado.write(subestacoes[maior_mes] + " " + consumosubmes[maior_mes][maior_subestacao] + "\n");
+        //subestacao com maior consumo mensal
+        MaiorConsumo maiorConsumo = new MaiorConsumo();
+        int[] indexMaior = maiorConsumo.calcularMaiorConsumo(matrizDeConsumos, consumos);
 
         resultado.write("\n");
+        resultado.write("Subestação com maior consumo mensal \n");
+        resultado.write(subestacoes[indexMaior[0]] + " " + consumoSubMes[indexMaior[0]][indexMaior[1]] + "\n");
+
+        //subestacao com menor consumo mensal
+        MenorConsumo menorConsumo = new MenorConsumo();
+        int[] indexMenor = menorConsumo.calcularMenorConsumo(matrizDeConsumos, consumos, maiorConsumo, indexMaior);
+        resultado.write("\n");
         resultado.write("Subestação com menor consumo mensal \n");
-        resultado.write(subestacoes[menor_mes] + " " + consumosubmes[menor_mes][menor_subestacao] + "\n");
+        resultado.write(subestacoes[indexMenor[0]] + " " + consumoSubMes[indexMenor[0]][indexMenor[1]] + "\n");
+
+
+        //lista do consumo mensal ordenada
+        ListaOrdenada listaOrdenada = new ListaOrdenada();
+        int[] consumoOrdenado = listaOrdenada.ordenarLista(consumosMes, consumos);
+
+        MesesOrdenados listaMeses = new MesesOrdenados();
+        String[] mesesOrdenados = listaMeses.ordenarMeses(consumosMes,consumos);
 
         resultado.write("\n");
         resultado.write("Lista do consumo total mensal ordenada \n");
         for (int i = 0; i < consumosDoMes.length; i++) {
-            resultado.write(mesesOrdenados[i] + " " + consumosDoMes[i] + "\n");
+            resultado.write(mesesOrdenados[i] + " " + consumoOrdenado[i] + "\n");
         }
 
         resultado.close();
