@@ -1,37 +1,37 @@
 O total geral de consumo foi:
-101720
+16479
 
 Matriz de consumo das subestacoes 
 Mês       Janeiro   Fevereiro Marco     Abril     Maio      Junho     Julho     Agosto    Setembro  Outubro   Novembro  Dezembro  
-Planalto  0         1923      0         4702      3709      2328      1422      3668      709       387       0         3090      
-Litoral   1493      453       0         1783      1997      0         1488      0         6040      1274      658       1648      
-Progresso 0         2623      813       1844      1004      303       1419      951       796       1193      0         3899      
-Aurora    1837      2982      1197      3267      1910      1961      1441      3949      1746      3189      2223      4874      
-Horizonte 1734      1651      3562      0         1499      51        2858      0         0         2759      1757      1656      
+Planalto  0         0         0         0         141       1413      2531      2033      0         0         1892      0         
+Litoral   0         0         0         2384      0         0         0         0         0         216       0         0         
+Progresso 0         0         1347      0         0         0         0         696       0         0         0         0         
+Aurora    0         1440      0         0         70        0         0         0         0         0         1015      0         
+Horizonte 0         0         947       0         291       0         0         63        0         0         0         0         
 
 Média de consumo por subestação 
-Planalto 1828,17
-Litoral 1402,83
-Progresso 1237,08
-Aurora 2548,00
-Horizonte 1460,58
+Planalto 667,50
+Litoral 216,67
+Progresso 170,25
+Aurora 210,42
+Horizonte 108,42
 
 Subestação com maior consumo mensal 
-Litoral 6040
+Planalto 2531
 
 Subestação com menor consumo mensal 
-Horizonte 51
+Horizonte 63
 
 Lista do consumo total mensal ordenada 
-Dezembro 15167
-Abril 11596
-Maio 10119
-Fevereiro 9632
-Setembro 9291
-Outubro 8802
-Julho 8628
-Agosto 8568
-Marco 5572
-Janeiro 5064
-Junho 4643
-Novembro 4638
+Novembro 2907
+Agosto 2792
+Julho 2531
+Abril 2384
+Marco 2294
+Fevereiro 1440
+Junho 1413
+Maio 502
+Outubro 216
+Janeiro 0
+Setembro 0
+Dezembro 0
