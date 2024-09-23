@@ -1,9 +1,19 @@
+import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.text.DecimalFormat;
 
 public class Main {
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException {
+        //Criação do arquivo de resultados
+        File arquivo = new File("resultado.txt");
+
+        if (!arquivo.exists()){
+            arquivo.createNewFile();
+        }
+
+        FileWriter resultado = new FileWriter(arquivo);
+
         LerArquivo lerArquivo = new LerArquivo();
         String[] linhas = lerArquivo.ler();
 
@@ -20,32 +30,21 @@ public class Main {
         }
 
         //consumo total por subestacao
-        int ConsumoTotal = 0;
-        for (Consumo consumo : consumos) {
-            ConsumoTotal += consumo.getConsumo();
-        }
-
-        System.out.println(" ");
-        System.out.println("O total geral de consumo foi:");
-        System.out.println(ConsumoTotal);
-        System.out.println(" ");
+        ConsumoTotal consumoTotal = new ConsumoTotal();
+        resultado.write("O total geral de consumo foi:\n" + String.format(consumoTotal.calcularConsumoTotal(consumos) + "\n"));
+        resultado.write("\n");
 
 
-        //lista de consumos por mês
         String[] meses = {"Janeiro", "Fevereiro", "Marco", "Abril", "Maio", "Junho", "Julho", "Agosto", "Setembro", "Outubro", "Novembro", "Dezembro"};
-        int[] consumosdomes = new int[12];
+        int[] consumosDoMes = new int[12];
         for (Consumo consumo : consumos){
             for (int i = 0; i < meses.length; i++){
                 if (consumo.getMes().equals(meses[i])){
-                    consumosdomes[i] += consumo.getConsumo();
+                    consumosDoMes[i] += consumo.getConsumo();
                 }
             }
         }
 
-        System.out.println("Lista de consumo por mês");
-        for (int i = 0; i < 12; i++){
-            System.out.println(meses[i] + " " + consumosdomes[i]);
-        }
 
         //matriz de consumos
         String[] subestacoes = {"Planalto", "Litoral", "Progresso", "Aurora", "Horizonte"};
@@ -61,21 +60,6 @@ public class Main {
             }
         }
 
-        System.out.println(" ");
-        System.out.println("Matriz de consumo das subestacoes");
-        System.out.printf("%-" + 15 + "s", "Mês");
-        for (int i = 0; i < meses.length; i++){
-            System.out.printf("%-" + 10 + "s", meses[i]);
-        }
-
-        for (int i = 0; i < consumosubmes.length; i++) {
-            System.out.println(" ");
-            System.out.printf("%-" + 15 + "s", subestacoes[i]);
-            for (int j = 0; j < consumosubmes[i].length; j++) {
-                System.out.printf("%-" + 10 + "d", consumosubmes[i][j]);
-            }
-        }
-
         //media por subestacao
         double[] media = new double[5];
         for(int i = 0; i < consumosubmes.length; i++){
@@ -84,15 +68,6 @@ public class Main {
                 soma += consumosubmes[i][j];
             }
             media[i] = soma / 12;
-        }
-
-        DecimalFormat df = new DecimalFormat("#.00");
-
-        System.out.println(" ");
-        System.out.println(" ");
-        System.out.println("Média de consumo por subestação");
-        for (int i = 0; i < media.length; i++) {
-            System.out.println(subestacoes[i] + " " + df.format(media[i]));
         }
 
         //subestacao com maior consumo mensal
@@ -112,10 +87,6 @@ public class Main {
             }
         }
 
-        System.out.println(" ");
-        System.out.println("Subestação com maior consumo mensal");
-        System.out.println(subestacoes[maior_mes] + " " + consumosubmes[maior_mes][maior_subestacao]);
-
         //subestacao com menor consumo mensal
         for (int i = 0; i < consumosubmes.length; i++) {
             for (int j = 0; j < consumosubmes[i].length; j++) {
@@ -127,43 +98,69 @@ public class Main {
             }
         }
 
-        System.out.println(" ");
-        System.out.println("Subestação com menor consumo mensal");
-        System.out.println(subestacoes[menor_mes] + " " + consumosubmes[menor_mes][menor_subestacao]);
-
-
         //lista do consumo mensal ordenada
-        int aux = 0;
-        String[] meses_ordenados = meses;
-        String aux_meses = "";
-        for (int i = 0; i < consumosdomes.length; i++) {
-            for (int j = 0; j < consumosdomes.length-i-1; j++) {
-                if (consumosdomes[j] < consumosdomes[j+1]){
-                    aux = consumosdomes[j];
-                    consumosdomes[j] = consumosdomes[j+1];
-                    consumosdomes[j+1] = aux;
-                    aux_meses = meses_ordenados[j];
-                    meses_ordenados[j] = meses_ordenados[j+1];
-                    meses_ordenados[j+1] = aux_meses;
+        int aux;
+        String[] mesesOrdenados = meses.clone();
+        String aux_meses;
+        for (int i = 0; i < consumosDoMes.length; i++) {
+            for (int j = 0; j < consumosDoMes.length-i-1; j++) {
+                if (consumosDoMes[j] < consumosDoMes[j+1]){
+                    aux = consumosDoMes[j];
+                    consumosDoMes[j] = consumosDoMes[j+1];
+                    consumosDoMes[j+1] = aux;
+                    aux_meses = mesesOrdenados[j];
+                    mesesOrdenados[j] = mesesOrdenados[j+1];
+                    mesesOrdenados[j+1] = aux_meses;
                 }
             }
         }
-        System.out.println(" ");
-        for (int i = 0; i < consumosdomes.length; i++) {
-            System.out.println(meses_ordenados[i] + " " + consumosdomes[i]);
+
+
+
+        //Impressão dos resultados no arquivo
+
+
+        //Total geral de consumo
+
+        resultado.write("Matriz de consumo das subestacoes \n");
+        resultado.write(String.format("%-10s", "Mês"));
+
+        for (int i = 0; i < meses.length; i++) {
+            resultado.write(String.format("%-10s", meses[i]));
         }
-    }
 
-    public class ExportarResultados{
-        public static void main(String[] args){
-            try {
-                FileWriter resultados = new FileWriter("Resultados.txt");
-                resultados.write("Teste");
-                resultados.close();
-
-            } catch (IOException e) {
-                throw new RuntimeException(e){};
+        resultado.write("\n");
+        for (int i = 0; i < consumosubmes.length; i++) {
+            resultado.write(String.format("%-10s", subestacoes[i]));
+            for (int j = 0; j < consumosubmes[i].length; j++) {
+                resultado.write(String.format("%-10s", consumosubmes[i][j]));
             }
+            resultado.write("\n");
         }
+
+        DecimalFormat df = new DecimalFormat("0.00");
+        resultado.write("\n");
+        resultado.write("Média de consumo por subestação \n");
+        for (int i = 0; i < media.length; i++) {
+            resultado.write(subestacoes[i] + " " + df.format(media[i]) + "\n");
+        }
+
+        resultado.write("\n");
+        resultado.write("Subestação com maior consumo mensal \n");
+        resultado.write(subestacoes[maior_mes] + " " + consumosubmes[maior_mes][maior_subestacao] + "\n");
+
+        resultado.write("\n");
+        resultado.write("Subestação com menor consumo mensal \n");
+        resultado.write(subestacoes[menor_mes] + " " + consumosubmes[menor_mes][menor_subestacao] + "\n");
+
+        resultado.write("\n");
+        resultado.write("Lista do consumo total mensal ordenada \n");
+        for (int i = 0; i < consumosDoMes.length; i++) {
+            resultado.write(mesesOrdenados[i] + " " + consumosDoMes[i] + "\n");
+        }
+
+        resultado.close();
+
     }
+
 }

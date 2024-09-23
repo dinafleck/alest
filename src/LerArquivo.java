@@ -4,20 +4,19 @@ import java.io.IOException;
 
 public class LerArquivo {
     public String[] ler() {
-        String arquivoCSV = "C:\\Users\\Dinara\\Desktop\\t1 - alest1\\Casos de teste\\consumos_20.csv";
-        String linha = "";
-
-        int coluna = 0;
+        String arquivoCSV = "Casos de teste\\consumos_100.csv";
+        String linha;
+        int tamanho = 0;
 
         try(BufferedReader br = new BufferedReader(new FileReader(arquivoCSV))) {
-            while ((linha = br.readLine()) != null){
-                coluna++;
+            while ((br.readLine()) != null){
+                tamanho++;
             }
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
 
-        String[] linhas = new String[coluna];
+        String[] linhas = new String[tamanho];
 
         try(BufferedReader br = new BufferedReader(new FileReader(arquivoCSV))){
             br.readLine();
